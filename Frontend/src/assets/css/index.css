@@ -1,0 +1,99 @@
+@import "tailwindcss";
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+@utility scrollbar-custom {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* scrollbar-gutter: stable; */
+  }
+  &::-webkit-scrollbar-track {
+    background: #e5e7eb;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #9333EA; indigo thumb
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #4f46e5;
+  }
+  scrollbar-width: thin;
+  scrollbar-color: #9333EA #e5e7eb;
+}
+/* 
+/* .scrollbar-hide {
+  -ms-overflow-style: none;  
+  scrollbar-width: none; }    */ */
+
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             
+} 
+
+
+@keyframes glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.glow::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: linear-gradient(
+    45deg,
+    #00f5ff,
+    #7c3aed,
+    #ec4899,
+    #00f5ff
+  );
+  background-size: 300% 300%;
+  animation: glow 6s ease infinite;
+  filter: blur(12px);
+  z-index: -1;
+}
+
+@keyframes shadowGlow {
+  0% {
+    box-shadow: 0 0 20px #22d3ee;
+  }
+  50% {
+    box-shadow: 0 0 30px #a855f7;
+  }
+  100% {
+    box-shadow: 0 0 20px #22d3ee;
+  }
+}
+
+.animated-shadow {
+  animation: shadowGlow 4s infinite ease-in-out;
+}
+
+/* Chrome, Edge, Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+.shaka-video-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.shaka-video {
+  width: 100% !important;
+  height: 100% !important;
+}
