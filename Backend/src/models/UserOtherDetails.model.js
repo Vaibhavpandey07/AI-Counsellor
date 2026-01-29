@@ -1,26 +1,19 @@
 import mongoose,{Schema} from "mongoose";
 import Users from "./Users.model.js";
-import { Videos } from "./Videos.model.js";
-import { Channels } from "./Channels.model.js";
+import { Universities } from "./universities.model.js";
 
 
 const userOtherDetailsSchema = new Schema({
-    user_id :{type:String, required:true , ref:Users}, 
-    watchHistory :[
-      { video: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Videos,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-        }
-    }],
-    searchHistory :[{type:String}],     
-    likedVideos :[{type:Schema.Types.ObjectId, ref:Videos}],
-    disLikedVideos :[{type:Schema.Types.ObjectId, ref:Videos}],
-    notification :[{type:String}],
-    subscribedTo :[{type:Schema.Types.ObjectId, ref:Channels}],            
+    user_id :{type:Schema.Types.ObjectId, required:true , ref:Users},
+    profileScore : {type:Number},
+    profileStrength : {type:Object},
+    profileWeakness : {type:Object},
+    currentStage : {type:Number},
+    shortlistedUniversities :[{type:Schema.Types.ObjectId, ref:Universities}],
+    aiTodoList  : {type:Object},
+    currentTodoStage  : {type:Number},
+    universitiesAcceptanceScore :[{university_id : {type:Schema.Types.ObjectId, ref:Universities} ,  acceptanceScore :{type:Number} }],
+
 })
 
 const UserOtherDetails = mongoose.model('UserOtherDetails',userOtherDetailsSchema);

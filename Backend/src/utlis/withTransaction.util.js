@@ -1,7 +1,5 @@
 import mongoose from "mongoose"
 
-
-// ACID Properties
 const withTransaction = async function(fn){
     const session = await mongoose.startSession();
     session.startTransaction();

@@ -64,7 +64,17 @@ const registration = async(req,res) =>{
 
 
                 const user = await Users.create(dataToSave);
-                await UserOtherDetails.create({"user_id" : new mongoose.Types.ObjectId(user._id) , "watchHistory":[],"searchHistory":[] , "likedVideos":[],"disLikedVideos":[],"notification":[] , "subscribedTo":[]})
+                await UserOtherDetails.create({"user_id" : new mongoose.Types.ObjectId(user._id) , 
+                        "profileScore" : 10,
+                        "profileStrength" : "",
+                        "profileWeakness" : "",
+                        "currentStage" : 1,
+                        "shortlistedUniversities" : [],
+                        "aiTodoList " : {},
+                        "currentTodoStage " : 0,
+                        "universitiesAcceptanceScore" : [],
+
+                })
                 await  sendOtpEmail(dataToSave.email,otp);
 
 
