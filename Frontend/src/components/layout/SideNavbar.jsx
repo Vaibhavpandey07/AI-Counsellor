@@ -54,7 +54,7 @@ export default function SideNavbar({viewSideNav,sideNavFalse,sideButtonRef}) {
           </li>
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-fill"></i></div>
-            <Link className='w-[75%] inline-block ' to='/'>Onboarding</Link> 
+            <Link className='w-[75%] inline-block ' to='/user/Onboarding'>Onboarding</Link> 
           </li>
 
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>

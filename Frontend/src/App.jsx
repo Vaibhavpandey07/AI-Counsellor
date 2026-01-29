@@ -22,6 +22,7 @@ import LikedVideos from "./features/pages/LikedVideos"
 import WatchHistory from "./features/pages/WatchHistory"
 import UpdateChannel from "./features/Channel/UpdateChannel"
 import LandingPage from "./Components/LandingPage" 
+import OnBoardingForm from "./features/OnBoarding/OnBoardingForm"
 
 
 function App() {
@@ -52,23 +53,26 @@ function App() {
           {path:"/channel/popularChannels" , element:<PopularChannels sideNav={sideNav}/> },
 
 
-          // {element : <ProtectedRoutes sideNav={sideNav} />,
-          //   children:[
-          //     {path:'/user/changeDetails', element:<UpdateUserDetails />},
-          //     {path:'/user/subscriptions', element:<Subscriptions sideNav={sideNav}/>},
-          //     {path:'/user/likedVideos', element:< LikedVideos sideNav={sideNav} />},
-          //     {path:'/user/watchHistory', element:< WatchHistory sideNav={sideNav} />},
+          {element : <ProtectedRoutes sideNav={sideNav} />,
+            children:[
+              {path:'/user/changeDetails', element:<UpdateUserDetails />},
+              {path:'/user/Onboarding', element:<OnBoardingForm  sideNav={sideNav}/>
+
+              },
+              {path:'/user/subscriptions', element:<Subscriptions sideNav={sideNav}/>},
+              {path:'/user/likedVideos', element:< LikedVideos sideNav={sideNav} />},
+              {path:'/user/watchHistory', element:< WatchHistory sideNav={sideNav} />},
 
 
-          //     {path:'/user/channel/createChannel', element:<CreateChannel />},
-          //     {path:'/user/channel/updateChannel', element:<UpdateChannel />},
+              {path:'/user/channel/createChannel', element:<CreateChannel />},
+              {path:'/user/channel/updateChannel', element:<UpdateChannel />},
 
-          //     {path:'/user/video/uploadVideo', element:<UploadVideo />},
+              {path:'/user/video/uploadVideo', element:<UploadVideo />},
 
 
-          //   ]
+            ]
           
-          // }
+          }
         ]
       
       },
