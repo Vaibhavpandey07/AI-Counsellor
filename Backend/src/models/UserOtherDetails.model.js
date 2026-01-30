@@ -12,10 +12,13 @@ const userOtherDetailsSchema = new Schema({
     shortlistedUniversities :[{type:Schema.Types.ObjectId, ref:Universities}],
     aiTodoList  : {type:Object},
     currentTodoStage  : {type:Number},
-    universitiesAcceptanceScore :[{university_id : {type:Schema.Types.ObjectId, ref:Universities} ,  acceptanceScore :{type:Number} }],
+    universitiesAcceptanceScore :[{university_id : {type:Schema.Types.ObjectId, ref:Universities} ,  acceptanceScore :{type:Number} , likelihood :{type:String} , reasons :{type:String} }],
 
 })
 
 const UserOtherDetails = mongoose.model('UserOtherDetails',userOtherDetailsSchema);
-
+UserOtherDetails.collection.createIndex({ userId: 1 });
+UserOtherDetails.collection.createIndex({
+  "universitiesAcceptanceScore.university_id": 1
+});
 export {UserOtherDetails}

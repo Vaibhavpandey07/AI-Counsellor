@@ -3,6 +3,14 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRouter from './routes/user.routes.js';
 import userOtherDetailsRouter from './routes/userOtherDetails.routes.js';
+import userOnBoardingRouter from './routes/userOnBoarding.routes.js';
+import universityRouter from './routes/university.routes.js';
+import lockUniversityRouter from './routes/lockUniversity.routes.js';
+import aiChatRouter from './routes/aiChat.routes.js';
+
+
+
+
 
 import cookieParser from 'cookie-parser'
 import errorMiddleware from './middleware/error.middleware.js';
@@ -37,6 +45,13 @@ app.use('/public', express.static('public'));
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/userOtherDetails', userOtherDetailsRouter);
+app.use('/api/v1/onboarding', userOnBoardingRouter);
+
+app.use('/api/v1/universities', universityRouter);
+app.use('/api/v1/lockUniversity', lockUniversityRouter);
+app.use('/api/v1/ai', aiChatRouter);
+
+
 
 
 

@@ -1,18 +1,16 @@
 import { Router} from "express";
 import { authToken } from "../middleware/auth.middleware.js";
-import { getWatchHistory, getLikedVideos , getSubscribedChannels, getNotification , clearWatchHistory , removeFromWatchHistory } from "../controllers/userOtherDetails.controller.js";
+import {getUserProfileDetails , shortlistUniversity , removeFromShortlist , getShortlistedUniversities} from "../controllers/userOtherDetails.controller.js";
 
 
 const router = Router();
 
-router.get('/watchHistory',authToken,getWatchHistory);
-router.get('/likedVideos',authToken,getLikedVideos);
+router.get('/getProfileDetails',authToken,getUserProfileDetails);
+router.patch('/shortlistUniversity',authToken,shortlistUniversity);
 
-router.get('/subscribedChannels',authToken,getSubscribedChannels);
-router.get('/notification',authToken,getNotification);
+router.patch('/removeFromShortlist',authToken,removeFromShortlist);
+router.get('/getShortlistedUniversities',authToken,getShortlistedUniversities);
 
-router.patch('/clearWatchHistory',authToken,clearWatchHistory);
-router.patch('/removeFromWatchHistory/:videoId',authToken,removeFromWatchHistory);
 
 
 

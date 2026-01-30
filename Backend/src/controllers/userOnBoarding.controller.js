@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
-import ApiError from "../utlis/ApiErrors.util";
-import { UserOnBoarding } from "../models/UserOnBoarding.model";
-import { UserOtherDetails } from "../models/UserOtherDetails.model";
-import { ApiResponse } from "../utlis/ApiResponse.util";
+import ApiError from "../utlis/ApiErrors.util.js";
+import { UserOnBoarding } from "../models/UserOnBoarding.model.js";
+import { UserOtherDetails } from "../models/UserOtherDetails.model.js";
+import { ApiResponse } from "../utlis/ApiResponse.util.js";
+import { generateAllUniversitiesScore } from "../services/generateUniversityScore.service.js";
+import { calculateStudentProfile } from "../services/generateProfileDetails.service.js";
 
 const onBoarding = async(req,res)=>{
     const data = req.body;
@@ -35,9 +37,40 @@ const onBoarding = async(req,res)=>{
         }
 
         const newOnBoarding = await UserOnBoarding.create(dataToSave);
-        await UserOtherDetails.findOneAndUpdate({user_id:req.userId},{$set:{currentStage:2}})
-        // AI microService to be called to evalute user profile;
-        return new ApiResponse(200,"User OnBoarded Successfully");
+        const student = {
+            educationBackground : {
+                    currentEducationLevel : newOnBoarding.currentEducationLevel,
+                    major : newOnBoarding.major,
+                    yearOfGraduation : newOnBoarding.yearOfGraduation,
+                    marks : newOnBoarding.marks,
+            },
+
+            targettedCourse :{
+                degreeToAchieve : newOnBoarding.degreeToAchieve,
+                degreeField : newOnBoarding.degreeField,
+                intake : newOnBoarding.intake,
+                intakeYear : newOnBoarding.intakeYear,
+
+                budget :newOnBoarding.budget,
+                targetCountries :newOnBoarding.targetCountries,
+                fundingPlan : newOnBoarding.fundingPlan,
+                haveScholarship : newOnBoarding.haveScholarship,
+            },
+
+            givenExamDetials :{
+                examGiven :newOnBoarding.examGiven,
+                examScore :newOnBoarding.examScore,
+                otherExamGiven :newOnBoarding.otherExamGiven,
+            },
+
+        }
+        // Evalution of student profile;
+        const studnetProfileDetails = await calculateStudentProfile(student);
+        // University score calculation
+        const universitiesAcceptanceScore = await generateAllUniversitiesScore(student);
+
+        await UserOtherDetails.findOneAndUpdate({user_id:req.userId},{$set:{currentStage:2,universitiesAcceptanceScore:universitiesAcceptanceScore , profileScore:studnetProfileDetails.profileScore , profileStrength:studnetProfileDetails.profileStrength, profileWeakness:studnetProfileDetails.profileWeakness}})
+        return res.status(200).send(new ApiResponse(200,"User OnBoarded Successfully"));
 
     }catch(err){
         throw new ApiError(500,err.message,[]);
@@ -77,63 +110,50 @@ const updateOnBoarding = async (req,res)=>{
 
 
         await onBoarding.save();
-        // AI microService to be called to re-evalute user profile;
-        return new ApiResponse(200,"User OnBoarded Details Updated Successfully");
+
+        const student = {
+            educationBackground : {
+                    currentEducationLevel : onBoarding.currentEducationLevel,
+                    major : onBoarding.major,
+                    yearOfGraduation : onBoarding.yearOfGraduation,
+                    marks : onBoarding.marks,
+            },
+
+            targettedCourse :{
+                degreeToAchieve : onBoarding.degreeToAchieve,
+                degreeField : onBoarding.degreeField,
+                intake : onBoarding.intake,
+                intakeYear : onBoarding.intakeYear,
+
+                budget :onBoarding.budget,
+                targetCountries :onBoarding.targetCountries,
+                fundingPlan : onBoarding.fundingPlan,
+                haveScholarship : onBoarding.haveScholarship,
+            },
+
+            givenExamDetials :{
+                examGiven :onBoarding.examGiven,
+                examScore :onBoarding.examScore,
+                otherExamGiven :onBoarding.otherExamGiven,
+            },
+
+        }
+        // Evalution of student profile;
+        const studnetProfileDetails = await calculateStudentProfile(student);
+        // University score calculation
+        const universitiesAcceptanceScore = await generateAllUniversitiesScore(student);
+
+        await UserOtherDetails.findOneAndUpdate({user_id:req.userId},{$set:{universitiesAcceptanceScore:universitiesAcceptanceScore , profileScore:studnetProfileDetails.profileScore , profileStrength:studnetProfileDetails.profileStrength, profileWeakness:studnetProfileDetails.profileWeakness}})
+
+
+        return res.status(200).send( new ApiResponse(200,"User OnBoarded Details Updated Successfully"));
 
     }catch(err){
         throw new ApiError(500,err.message,[]);
     }
 }
 
-const getUserProfileDetails = async(req,res)=>{
-    try{
-        const userOnBoarding = await UserOnBoarding.findOne({user_id:req.userId});
-        const userOtherdetails = await UserOtherDetails.findOne({user_id:req.userId});
-        if(!userOnBoarding || !userOtherdetails ){
-            throw new ApiError(404, "User Has not Onboarded",[]);
-        }
-        const dataTosend = {
-            educationBackground : {
-                    currentEducationLevel : userOnBoarding.currentEducationLevel,
-                    major : userOnBoarding.major,
-                    yearOfGraduation : userOnBoarding.yearOfGraduation,
-                    marks : userOnBoarding.marks,
-            },
-
-            targettedCourse :{
-                degreeToAchieve : userOnBoarding.degreeToAchieve,
-                degreeField : userOnBoarding.degreeField,
-                intake : userOnBoarding.intake,
-                intakeYear : userOnBoarding.intakeYear,
-
-                budget :userOnBoarding.budget,
-                targetCountries :userOnBoarding.targetCountries,
-                fundingPlan : userOnBoarding.fundingPlan,
-                haveScholarship : userOnBoarding.haveScholarship,
-            },
-
-            givenExamDetials :{
-                examGiven :userOnBoarding.examGiven,
-                examScore :userOnBoarding.examScore,
-                otherExamGiven :userOnBoarding.otherExamGiven,
-            },
-
-            profileStrength:userOtherdetails.profileStrength,
-            profileWeakness:userOtherdetails.profileWeakness,
-            currentStage : userOtherdetails.currentStage,
-            aiTodoList : userOtherdetails.aiTodoList,
-            currentTodoStage : userOtherdetails.currentTodoStage,
-            shortlistedUniversities : userOtherdetails.shortlistedUniversities,
-            profileScore : userOtherdetails.profileScore,
-
-        }
-
-        return new ApiResponse(200,"Success",dataTosend);
-
-    }catch(err){
-        throw new ApiError(500,err.message);
-    }
-}
 
 
-export {onBoarding, updateOnBoarding, getUserProfileDetails}
+
+export {onBoarding, updateOnBoarding}

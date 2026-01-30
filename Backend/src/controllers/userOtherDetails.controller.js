@@ -1,213 +1,105 @@
 import mongoose from "mongoose";
-import { Channels } from "../models/Channels.model.js";
+import { UserOnBoarding } from "../models/UserOnBoarding.model.js";
 import { UserOtherDetails } from "../models/UserOtherDetails.model.js";
-import Users from "../models/Users.model.js";
-import { Videos } from "../models/Videos.model.js";
-import { ApiResponse } from "../utlis/ApiResponse.util.js";
 import ApiError from "../utlis/ApiErrors.util.js";
 
+const getUserProfileDetails = async(req,res)=>{
+    try{
+        const userOnBoarding = await UserOnBoarding.findOne({user_id:req.userId});
+        const userOtherdetails = await UserOtherDetails.findOne({user_id:req.userId});
+        if(!userOnBoarding || !userOtherdetails ){
+            throw new ApiError(404, "User Has not Onboarded",[]);
+        }
+        const dataTosend = {
+            educationBackground : {
+                    currentEducationLevel : userOnBoarding.currentEducationLevel,
+                    major : userOnBoarding.major,
+                    yearOfGraduation : userOnBoarding.yearOfGraduation,
+                    marks : userOnBoarding.marks,
+            },
 
-const getWatchHistory = async(req , res )=>{
-    const userId = req.userId;
-    const page = parseInt(req.query.page)|| 1;
-    const limit = parseInt(req.query.limit) || 10;
+            targettedCourse :{
+                degreeToAchieve : userOnBoarding.degreeToAchieve,
+                degreeField : userOnBoarding.degreeField,
+                intake : userOnBoarding.intake,
+                intakeYear : userOnBoarding.intakeYear,
 
-    const user = await UserOtherDetails.findOne({user_id:userId});
-    if(!user){
-        throw new ApiError(500,"Unable to find UserDetails")
+                budget :userOnBoarding.budget,
+                targetCountries :userOnBoarding.targetCountries,
+                fundingPlan : userOnBoarding.fundingPlan,
+                haveScholarship : userOnBoarding.haveScholarship,
+            },
+
+            givenExamDetials :{
+                examGiven :userOnBoarding.examGiven,
+                examScore :userOnBoarding.examScore,
+                otherExamGiven :userOnBoarding.otherExamGiven,
+            },
+
+            profileStrength:userOtherdetails.profileStrength,
+            profileWeakness:userOtherdetails.profileWeakness,
+            currentStage : userOtherdetails.currentStage,
+            aiTodoList : userOtherdetails.aiTodoList,
+            currentTodoStage : userOtherdetails.currentTodoStage,
+            shortlistedUniversities : userOtherdetails.shortlistedUniversities,
+            profileScore : userOtherdetails.profileScore,
+
+        }
+
+        return res.status(200).send(new ApiResponse(200,"Success",dataTosend));
+
+    }catch(err){
+        throw new ApiError(500,err.message);
     }
+}
 
-    
-    
+const shortlistUniversity = async(req,res)=>{
+    try{
+        const userId = new mongoose.Types.ObjectId(req.userId);
+        const universityId = new mongoose.Types.ObjectId(req.body.universityId);
+        const userDetails = await UserOtherDetails.findOne({"user_id":new mongoose.Types.ObjectId(userId)});
 
-    try {
+         if(  userDetails.shortlistedUniversities.some(id=>{
+            return id.equals(universityId);} )) {
 
-        const skip = (page-1)*limit;
-
-
-        const videoIds = user.watchHistory.map(item => item.video);
-
-        const results = await Videos.aggregate([
-            {$match:{_id:{$in : videoIds}} },
-            {$sort:{updatedAt:-1}},
-            {$skip :skip},
-            {$limit : limit+1},
-
-            {$lookup : {
-                from : "channels",
-                localField :"channel_id",
-                foreignField:"_id",
-                as : "channel"
-            }},
-
-            {$unwind :"$channel"},
-
-            {$project : {
-                _id:0,
-                video_id: "$_id",
-                thumbnail:1,
-                title:1,
-                description:1,
-                category:1,
-                language:1,
-                dateUploaded:1,
-                location:1,
-                views:1,
-                likes:1,
-                dislikes:1,
-                channelName :"$channel.channelName",
-                channelDescription : "$channel.description",
-                channelUserName : "$channel.channelUserName",
-                profilePhoto : "$channel.profilePhoto",
-                totalSubscriberCount : "$channel.totalSubscriberCount"
-            }
-
-            }
-        ]
-    )
+            return res.status(409).send(new ApiResponse(409,"University already Shortlisted"));
+        }
 
 
-        const hasMore = results.length>limit?true:false;
-        if(hasMore){results.pop()};
+        await UserOtherDetails.findOneAndUpdate({"user_id":new mongoose.Types.ObjectId(userId)} , 
+        {$addToSet:{shortlistedUniversities:{ universityId: universityId }} , $set:{currentStage:(userDetails.currentStage>3?userDetails.currentStage:3)}}, {upsert: false});
 
-
-
-        res.status(200).send(new ApiResponse(200,(results.length>0)?" Results found":" Results not Found",{"data" : results,"hasMore":hasMore,page,limit}));
+        return res.status(200).send(new ApiResponse(200,"University Added In Shortlist"));
 
 
     }catch(err){
         throw new ApiError(500,err.message);
     }
-
-
 }
 
-const getLikedVideos = async(req , res )=>{
-    const userId = req.userId;
-    const page = parseInt(req.query.page)|| 1;
-    const limit = parseInt(req.query.limit) || 10;
+const removeFromShortlist = async(req,res)=>{
+    try{
+        const userId = req.userId;
+        const universityId = new mongoose.Types.ObjectId(req.body.universityId);
+        
+        const userDetails = await UserOtherDetails.findOne({"user_id":new mongoose.Types.ObjectId(userId)});
 
-    const user = await UserOtherDetails.findOne({user_id:userId});
-    if(!user){
-        throw new ApiError(500,"Unable to find UserDetails")
-    }
-
-    
-    
-
-    try {
-
-        const skip = (page-1)*limit;
-
-
-
-        const results = await Videos.aggregate([
-            {$match:{_id:{$in : user.likedVideos}} },
-            {$skip :skip},
-            {$limit : limit+1},
-
-            {$lookup : {
-                from : "channels",
-                localField :"channel_id",
-                foreignField:"_id",
-                as : "channel"
-            }},
-
-            {$unwind :"$channel"},
-
-            {$project : {
-                _id:0,
-                video_id: "$_id",
-                thumbnail:1,
-                title:1,
-                description:1,
-                category:1,
-                language:1,
-                dateUploaded:1,
-                location:1,
-                views:1,
-                likes:1,
-                dislikes:1,
-                channelName :"$channel.channelName",
-                channelDescription : "$channel.description",
-                channelUserName : "$channel.channelUserName",
-                profilePhoto : "$channel.profilePhoto",
-                totalSubscriberCount : "$channel.totalSubscriberCount"
+         if(  userDetails.shortlistedUniversities.some(id=>{
+            return id.equals(universityId);} )) {
+             
+            if(userDetails.shortlistedUniversities.length==1 && userDetails.currentStage==3){
+                userDetails.currentStage = 2;
             }
 
-            }
-        ]
-    )
-
-
-        const hasMore = results.length>limit?true:false;
-        if(hasMore){results.pop()};
-
-
-
-        res.status(200).send(new ApiResponse(200,(results.length>0)?" Results found":" Results not Found",{"data" : results,"hasMore":hasMore,page,limit}));
-
-
-    }catch(err){
-        throw new ApiError(500,err.message);
-    }
-
-}
-
-const getSubscribedChannels = async(req,res)=>{
-    const userId = req.userId;
-    const user = await UserOtherDetails.findOne({user_id:userId});
-    const channelList = await Channels.find( {_id:{$in : user.subscribedTo}} );
-    
-
-    try {
-
-        const channelData = await Promise.all(channelList.map(async(channel)=>{
+            await UserOtherDetails.findOneAndUpdate({user_id:userId},{$pull:{shortlistedUniversities:{ universityId: universityId } }, $set:{currentStage:userDetails.currentStage}});
+            return res.status(200).send(new ApiResponse(200,"University Removed from Shortlist"));
             
-                
-                
-                const dataToSend = {
-                    "channelName" : channel.channelName ,
-                    "description" : channel.description ,
-                    "channelUserName" : channel.channelUserName ,
-                    "profilePhoto" : channel.profilePhoto ,
-                    "coverImage" :channel.coverImage,
-                    "totalSubscriberCount" : channel.totalSubscriberCount ,
-                    "totalViewCount" : channel.totalViewCount, 
-                };
-                return dataToSend  
-            })
-        )
+        }else{
 
-        res.status(200).send(new ApiResponse(200,"All channels retrived successfully",channelData));
+            return res.status(409).send(new ApiResponse(409,"University not Shortlisted"));
 
+        }
 
-    }catch(err){
-        throw new ApiError(500,err.message);
-    }
-
-}
-
-const getNotification = async(req,res)=>{
-    try{
-        const userId = req.userId;
-        const user = await UserOtherDetails.findOne({user_id:userId});
-        const data= user.notification;
-        res.status(200).send(new ApiResponse(200,"notification",data));
-
-    }catch(err){
-        throw new ApiError(500,err.message);
-
-    }
-}
-
-const clearWatchHistory = async(req,res)=>{
-    try{
-        const userId = req.userId;
-        const user = await UserOtherDetails.findOne({user_id:userId});
-        user.watchHistory = [];
-        await user.save({validationBeforeSave:false});
-        res.status(200).send(new ApiResponse(200,"all Videos Removed from watch History"));
 
 
     }catch(err){
@@ -216,18 +108,62 @@ const clearWatchHistory = async(req,res)=>{
     }
 }
 
-const removeFromWatchHistory = async(req,res)=>{
-    try{
-        const userId = req.userId;
-        const videoId = new mongoose.Types.ObjectId(req.params.videoId);
-        await UserOtherDetails.findOneAndUpdate({user_id:userId},{$pull:{watchHistory:{ video: videoId } }});
-        res.status(200).send(new ApiResponse(200,"Video Removed from watch History"));
-    }catch(err){
-        throw new ApiError(500,err.message);
+const getShortlistedUniversities = async (req, res) => {
+  const userId = new mongoose.Types.ObjectId(req.userId);
 
-    }
-}
+  try {
+    const result = await UserOtherDetails.aggregate([
+      {
+        $match: { userId }
+      },
+      {
+        $unwind: "$shortlistedUniversities"
+      },
+      {
+        $lookup: {
+          from: "universities",
+          localField: "shortlistedUniversities",
+          foreignField: "_id",
+          as: "university"
+        }
+      },
+      {
+        $unwind: "$university"
+      },
+      {
+        $project: {
+          _id: 0,
+          university: {
+            _id: "$university._id",
+            code: "$university.code",
+            universityName: "$university.universityName",
+            city: "$university.city",
+            country: "$university.country",
+            countryCode: "$university.countryCode",
+            website: "$university.website",
+            Description: "$university.Description",
+            courses: "$university.courses",
+            scholarships: "$university.scholarships",
+            entry_paths: "$university.entry_paths",
+            numberOfStudents: "$university.numberOfStudents",
+            internationStudentsPercent: "$university.internationStudentsPercent",
+            isInTop200: "$university.isInTop200",
+            feeBand: "$university.feeBand",
+            requirements: "$university.requirements"
+          }
+        }
+      }
+    ]);
+
+    res.status(200).json(
+      new ApiResponse(200, "Shortlisted universities fetched", result)
+    );
+
+  } catch (err) {
+    console.error(err);
+    throw new ApiError(500, err.message);
+  }
+};
 
 
-
-export {getWatchHistory, getLikedVideos , getSubscribedChannels, getNotification , clearWatchHistory , removeFromWatchHistory};
+export {getUserProfileDetails , shortlistUniversity , removeFromShortlist , getShortlistedUniversities}

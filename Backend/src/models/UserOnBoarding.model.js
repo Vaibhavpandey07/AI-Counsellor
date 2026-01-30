@@ -8,18 +8,18 @@ const userOnBoardingSchema = new Schema({
     yearOfGraduation :{type:Number, required:true},
     marks :{type:String },
 
-    degreeToAchieve :{type:String, required:true },
-    degreeField :{type:String, required:true },
-    intake :{type:String, required:true },
-    intakeYear :{type:Number, required:true},
+    degreeToAchieve :{type:String},
+    degreeField :{type:String},
+    intake :{type:String },
+    intakeYear :{type:Number},
 
-    budget : {type:Number, required:true},
+    budget : {type:Number},
     targetCountries :[{type:String}],
-    fundingPlan :{type:String, required:true },
-    haveScholarship :{type:Boolean, required:true},
+    fundingPlan :{type:String },
+    haveScholarship :{type:Boolean},
 
-    examGiven :{type:String, required:true },
-    examScore :{type:Number, required:true},
+    examGiven :{type:String},
+    examScore :{type:Number},
     otherExamGiven :{type:String },
 
 },{timestamps:true})

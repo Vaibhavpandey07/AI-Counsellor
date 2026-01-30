@@ -4,14 +4,12 @@ import { ApiResponse } from "../utlis/ApiResponse.util.js";
 import {env} from "../utlis/getEnvVariable.util.js";
 import { generateToken } from "../utlis/generateTokens.util.js";
 import  jwt from "jsonwebtoken"
-import { Channels } from "../models/Channels.model.js";
+// import { Channels } from "../models/Channels.model.js";
 import mongoose from "mongoose";
 // import { withTransaction } from "../utlis/withTransaction.util.js";
 import fs from "fs/promises"
 import { UserOtherDetails } from "../models/UserOtherDetails.model.js";
-import { Subscriptions } from "../models/Subscriptions.model.js";
-import { Videos } from "../models/Videos.model.js";
-import { Comments } from "../models/Comments.model.js";
+
 import { generateOtp, sendOtpEmail } from "../services/sendOtpEmail.services.js";
 import ApiError from "../utlis/ApiErrors.util.js";
 import { createAvatar } from "../services/createAvatar.service.js";
@@ -246,11 +244,7 @@ const updateProfilePhoto =async(req,res)=>{
 
         const oldProfilePhoto = user.profilePhoto;
         await Users.findByIdAndUpdate({_id:req.userId},{$set:{'profilePhoto':outputImagePath}} )
-        const channel = await Channels.findOne({user_id:new mongoose.Types.ObjectId(req.userId)})
-        if(channel){
-            channel.profilePhoto = outputImagePath;
-            await channel.save({validationBeforeSave :false},{session});
-        }
+
         try{
             await fs.unlink(oldProfilePhoto,
                 (err) => {
@@ -304,59 +298,59 @@ const resetPassword = async(req,res)=>{
         throw new ApiError(500,err.message);
     }
 }
+const removeUser = async(req,res)=>{}
 
-
-const removeUser = async(req,res)=>{
-    const user = await Users.findById({_id:req.userId})
-    if(!user){
-        throw new ApiError(400,"User does not exist");
-    }
-     try{
+// const removeUser = async(req,res)=>{
+//     const user = await Users.findById({_id:req.userId})
+//     if(!user){
+//         throw new ApiError(400,"User does not exist");
+//     }
+//      try{
                 
-        const channel = await Channels.findOne({user_id:user._id});
-        if(channel){
-            const allVideos = await Videos.find({channel_id:channel._id});
-            const channelVideoIds = await Promise.all(allVideos.map(async(video)=>{
-                    try{
-                        fs.rm(video.videoPath, { recursive: true, force: true });
-                        fs.unlink(video.thumbnail);
-                    }catch(err){
-                        console.error("Failed to delete original file:", err);
-                    }
-                    await Comments.deleteMany({video_id:video._id});
-                    return video._id;
-                })
-            )
-            await Videos.deleteMany({_id:{$in :channelVideoIds}});
-            await Subscriptions.deleteMany({channel_id:channel._id});
-            try{
-                fs.unlink(channel.coverImage)
-            }catch(err){
-                    console.error("Failed to delete original file:", err);
-            } 
+//         const channel = await Channels.findOne({user_id:user._id});
+//         if(channel){
+//             const allVideos = await Videos.find({channel_id:channel._id});
+//             const channelVideoIds = await Promise.all(allVideos.map(async(video)=>{
+//                     try{
+//                         fs.rm(video.videoPath, { recursive: true, force: true });
+//                         fs.unlink(video.thumbnail);
+//                     }catch(err){
+//                         console.error("Failed to delete original file:", err);
+//                     }
+//                     await Comments.deleteMany({video_id:video._id});
+//                     return video._id;
+//                 })
+//             )
+//             await Videos.deleteMany({_id:{$in :channelVideoIds}});
+//             await Subscriptions.deleteMany({channel_id:channel._id});
+//             try{
+//                 fs.unlink(channel.coverImage)
+//             }catch(err){
+//                     console.error("Failed to delete original file:", err);
+//             } 
     
-            await Channels.deleteOne({_id:channel._id});
-        }
-        await Subscriptions.deleteMany({user_id:user._id});
-        await UserOtherDetails.deleteOne({user_id:user._id});
-        try{
-            fs.unlink(user.profilePhoto);
-        }catch(err){
-            console.error("Failed to delete original file:", err);
-        }
+//             await Channels.deleteOne({_id:channel._id});
+//         }
+//         await Subscriptions.deleteMany({user_id:user._id});
+//         await UserOtherDetails.deleteOne({user_id:user._id});
+//         try{
+//             fs.unlink(user.profilePhoto);
+//         }catch(err){
+//             console.error("Failed to delete original file:", err);
+//         }
 
-        await Users.deleteOne({_id:user._id});
+//         await Users.deleteOne({_id:user._id});
 
-        return res.status(200).send(new ApiResponse(200,"User Deleted succussfully"));
+//         return res.status(200).send(new ApiResponse(200,"User Deleted succussfully"));
                     
 
 
     
-    }
-    catch(err){
-       throw new ApiError(500,err.message);
-    }
-}
+//     }
+//     catch(err){
+//        throw new ApiError(500,err.message);
+//     }
+// }
 
 
 const getUserDetails = async(req,res)=>{
