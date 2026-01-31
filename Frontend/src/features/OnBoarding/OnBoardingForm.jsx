@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import heroBackground from "../../assets/img/hero/hero-bg_new.jpg";
 import UserCard from "./UserCard";
+import { AuroraBackground } from "../../components/layout/AuroraBackground";
+import api from "../../api/axios";
+import { replace, useNavigate } from "react-router-dom";
 
 let YEARS = Array.from({ length: 2026 - 1980 + 1 }, (_, i) => 1980 + i);
 YEARS.reverse()
@@ -18,11 +21,9 @@ const COUNTRIES = [
   "United Kingdom",
   "Germany",
   "Australia",
-  "France",
   "Netherlands",
   "Ireland",
-  "Sweden",
-  "New Zealand",
+
 ];
 
 export default function OnBoardingForm() {
@@ -31,17 +32,21 @@ export default function OnBoardingForm() {
     educationLevel: "",
     educationField: "",
     year: "",
+    marks:"",
     degree: "",
     degreeField: "",
     intake: "",
+    intakeYear :"",
     budget: "",
     countries: [],
     scholarship: "no",
+    fundingPlan:"",
     exam: "",
     score: "",
     extraExam: "",
   });
 
+  const navigate = useNavigate();
   const addCountry = (c) => {
     if (!form.countries.includes(c)) {
       setForm({ ...form, countries: [...form.countries, c] });
@@ -52,10 +57,54 @@ export default function OnBoardingForm() {
     setForm({ ...form, countries: form.countries.filter((x) => x !== c) });
   };
 
+  const onSubmit = async()=>{
+    if(form.educationLevel && form.educationField && form.year && form.degree && form.degreeField && form.intake && form.intakeYear && form.budget && form.fundingPlan ){
+      
+      const dataToSave = {
+        currentEducationLevel : form.educationLevel,
+        major : form.educationField,
+        yearOfGraduation : form.year,
+        marks : form.marks,
+        
+        degreeToAchieve : form.degree,
+        degreeField : form.degreeField,
+        intake : form.intake,
+        intakeYear : form.intakeYear,
+        
+        budget : form.budget,
+        targetCountries :  form.countries,
+        fundingPlan : form.fundingPlan,
+        haveScholarship : form.scholarship,
+        
+        examGiven : form.exam,
+        examScore : form.score,
+        otherExamGiven : form.extraExam,
+      }
+
+      await api.post('/api/v1/onboarding/onBoarding',dataToSave).then((res)=>{
+        if(res.status == 200 ){
+          navigate('/user/dashboard',{replace:true})
+        }
+
+      })
+
+
+    }
+  }
+
+  const [submitDisable, setSubmitDisable] = useState(true);
+
+  useEffect(()=>{
+       if(form.educationLevel && form.educationField && form.year && form.degree && form.degreeField && form.intake && form.intakeYear && form.budget && form.fundingPlan ){
+        setSubmitDisable(false);
+       }
+  },[form])
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6"    >
-      <div className="absolute w-full max-w-4xl blur-md rounded-xl border-1 border-grey-400  h-[620px]  z-[1] animated-gradient"></div>
-      <div className="w-full max-w-4xl  bg-white/15 rounded-xl  p-6 h-[620px] flex flex-col z-[10]">
+    <div className="flex justify-center items-center min-h-screen  p-6"    >
+      <AuroraBackground/>
+      {/* <div className="absolute w-full max-w-4xl blur-md rounded-xl border-1 border-grey-400  h-[620px]  z-[1] animated-gradient"></div> */}
+      <div className="w-full max-w-4xl  bg-white/50 rounded-xl  p-6 h-[700px] flex flex-col z-[10]">
         <div className="mb-6 px-2 ">
           <StepProgress step={step} />
         </div>
@@ -103,6 +152,8 @@ export default function OnBoardingForm() {
                   <option key={y}>{y}</option>
                 ))}
               </Select>
+
+              <Input label="GPA / CGPA" value={form.marks} onChange={(v) => setForm({ ...form, marks: v })} />
             </div>
           )}
 
@@ -134,9 +185,14 @@ export default function OnBoardingForm() {
 
               <Select label="Intake" value={form.intake} onChange={(v) => setForm({ ...form, intake: v })}>
                 <option value="">Select intake</option>
-                <option>Summer 2026</option>
-                <option>Winter 2026</option>
-                <option>Summer 2027</option>
+                <option>Summer</option>
+                <option>Winter</option>
+              </Select>
+
+              <Select label="Intake Year" value={form.intakeYear} onChange={(v) => setForm({ ...form, intakeYear: v })}>
+                <option value="">Select intake</option>
+                <option>2026</option>
+                <option>2027</option>
               </Select>
             </div>
           )}
@@ -146,7 +202,7 @@ export default function OnBoardingForm() {
               <Select label="Budget (USD)" value={form.budget} onChange={(v) => setForm({ ...form, budget: v })}>
                 <option value="">Select budget</option>
                 {[20000, 25000, 30000, 35000, 40000, 45000, 50000, 100000].map((b) => (
-                  <option key={b}>${b}</option>
+                  <option key={b}>{b}</option>
                 ))}
               </Select>
 
@@ -189,6 +245,15 @@ export default function OnBoardingForm() {
                     </label>
                   ))}
                 </div>
+
+              <Select label="Funding Plan" value={form.fundingPlan} onChange={(v) => setForm({ ...form, fundingPlan: v })}>
+                <option value="">Select funding Plan</option>
+                {["Self Funding","Loan" ,"Scholarship"].map((b) => (
+                  <option key={b}>{b}</option>
+                ))}
+              </Select>
+
+                
               </div>
             </div>
           )}
@@ -202,7 +267,7 @@ export default function OnBoardingForm() {
                 ))}
               </Select>
 
-              {form.exam && <Input label="Exam Score" value={form.score} onChange={(v) => setForm({ ...form, score: v })} />}
+              {<Input label="Exam Score" value={form.score} onChange={(v) => setForm({ ...form, score: v })} />}
 
               {form.exam && (
                 <Select label="Add Another Exam" value={form.extraExam} onChange={(v) => setForm({ ...form, extraExam: v })}>
@@ -231,7 +296,7 @@ export default function OnBoardingForm() {
             </button>
           )}
           {step === 4 && (
-            <button className="ml-auto px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+            <button className="ml-auto px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:cursor-not-allowed disabled:bg-gray-700" disabled={submitDisable} onClick={onSubmit} >
               Submit
             </button>
           )}

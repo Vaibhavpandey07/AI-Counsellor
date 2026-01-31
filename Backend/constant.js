@@ -1,4 +1,5 @@
-const countries = [{country:'Canada',countryCode : 'ca'},
+const countries = [
+{country:'Canada',countryCode : 'ca'},
 {country:'Australia',countryCode : 'au'},
 {country:'Germany',countryCode : 'de'},
 {country:'Ireland',countryCode : 'ie'},

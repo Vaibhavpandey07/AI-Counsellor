@@ -3,7 +3,7 @@ import ApiError from "../utlis/ApiErrors.util.js";
 import { UserOnBoarding } from "../models/UserOnBoarding.model.js";
 import { UserOtherDetails } from "../models/UserOtherDetails.model.js";
 import { ApiResponse } from "../utlis/ApiResponse.util.js";
-import { generateAllUniversitiesScore } from "../services/generateUniversityScore.service.js";
+import {  generateAllUniversitiesScoreOffline } from "../services/generateUniversityScore.service.js";
 import { calculateStudentProfile } from "../services/generateProfileDetails.service.js";
 
 const onBoarding = async(req,res)=>{
@@ -26,7 +26,7 @@ const onBoarding = async(req,res)=>{
             intake : data?.intake,
             intakeYear : data?.intakeYear,
 
-            budget : data?.budget,
+            budget : (data?.budget),
             targetCountries :  data?.targetCountries,
             fundingPlan : data?.fundingPlan,
             haveScholarship : data?.haveScholarship,
@@ -67,7 +67,7 @@ const onBoarding = async(req,res)=>{
         // Evalution of student profile;
         const studnetProfileDetails = await calculateStudentProfile(student);
         // University score calculation
-        const universitiesAcceptanceScore = await generateAllUniversitiesScore(student);
+        const universitiesAcceptanceScore = await generateAllUniversitiesScoreOffline(student);
 
         await UserOtherDetails.findOneAndUpdate({user_id:req.userId},{$set:{currentStage:2,universitiesAcceptanceScore:universitiesAcceptanceScore , profileScore:studnetProfileDetails.profileScore , profileStrength:studnetProfileDetails.profileStrength, profileWeakness:studnetProfileDetails.profileWeakness}})
         return res.status(200).send(new ApiResponse(200,"User OnBoarded Successfully"));

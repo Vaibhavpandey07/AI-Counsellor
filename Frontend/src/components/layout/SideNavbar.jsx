@@ -50,16 +50,13 @@ export default function SideNavbar({viewSideNav,sideNavFalse,sideButtonRef}) {
         <div className='flex flex-col p-1'>
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-user"></i></div>
-            <Link className='w-[75%] inline-block ' to='/user/changeDetails'>Your Account</Link> 
+            <Link className='w-[75%] inline-block ' to='/user/dashboard'>Your Account</Link> 
           </li>
-          <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
-            <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-fill"></i></div>
-            <Link className='w-[75%] inline-block ' to='/user/Onboarding'>Onboarding</Link> 
-          </li>
+          
 
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-cube"></i></div>
-            <Link className='w-[75%] inline-block ' to='/user/subscriptions'>AI Counsellor Help</Link> 
+            <Link className='w-[75%] inline-block ' to='/user/ai/chat'>AI Counsellor Help</Link> 
           </li>
 
 
@@ -67,19 +64,19 @@ export default function SideNavbar({viewSideNav,sideNavFalse,sideButtonRef}) {
         </div>
 
           <div className='flex flex-col p-1'>
-            <li className='block w-[100%] font-semibold  p-2 my-0.5'>
+            <li className='block w-[100%] font-semibold  p-2 my-0.5 text-purple-600'>
               <h3 className='inline-block text-center  font-bold'>Explore Universities</h3>
             </li>
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'>
               <i className="fa-solid fa-earth-asia"></i>
               </div>
-            <Link className='w-[75%] inline-block ' to='/?type=trending'>All Universities</Link> 
+            <Link className='w-[75%] inline-block ' to='/user/universities'>All Universities</Link> 
           </li>
 
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-arrow-trend-up"></i></div>
-            <Link className='w-[75%] inline-block ' to='/?type=latest'>Matching with Profile</Link> 
+            <Link className='w-[75%] inline-block ' to='/user/universitiesBasedOnProfile'>Matching with Profile</Link> 
           </li>
 
           <div className='mt-3 w-[100%] border-b-2 border-b-gray-300 rounded-3xl'></div>
@@ -87,17 +84,17 @@ export default function SideNavbar({viewSideNav,sideNavFalse,sideButtonRef}) {
 
 
           <div className='flex flex-col p-1'>
-            <li className='block w-[100%] font-semibold  p-2 my-0.5 '>
-              <h3 className='inline-block text-center  font-bold'>Your Universities</h3>
+            <li className='block w-[100%] font-semibold  p-2 my-0.5 text-purple-600 '>
+              <h3 className='inline-block text-center  font-bold '>Your Universities</h3>
             </li>
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-newspaper"></i></div>
-            <a className='w-[75%] inline-block ' herf='#'>Short Listed </a> 
+            <Link className='w-[75%] inline-block ' to='/user/univeristy/shorlistedUniversity'>ShortListed Universities</Link> 
           </li>
 
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-solid fa-school-lock"></i></div>
-            <a className='w-[75%] inline-block ' herf='#'>Locked University</a> 
+            <Link className='w-[75%] inline-block ' to='/user/univeristy/lockedUniversity'>Locked University</Link> 
           </li>
 
           <div className='mt-3 w-[100%] border-b-2 border-b-gray-300 rounded-3xl'></div>
@@ -106,7 +103,7 @@ export default function SideNavbar({viewSideNav,sideNavFalse,sideButtonRef}) {
 
           <div className='flex flex-col p-1'>
             <li className='block w-[100%] font-semibold  p-2 my-0.5'>
-              <h3 className='inline-block text-center font-bold'>More</h3>
+              <h3 className='inline-block text-center font-bold text-purple-600'>More</h3>
             </li>
           <li className='block w-[100%] font-semibold  p-2 my-0.5 hover:bg-gray-200'>
             <div className='inline-block text-center w-[25%]'><i className="fa-regular fa-address-card"></i></div>

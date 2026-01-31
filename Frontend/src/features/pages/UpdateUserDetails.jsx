@@ -161,7 +161,7 @@ export default function UpdateUserDetails() {
 
           <label
             htmlFor="profileUpload"
-            className="text-indigo-600 cursor-pointer text-sm"
+            className="text-purple-600 cursor-pointer text-sm"
           >
             Change profile photo
           </label>
@@ -205,9 +205,9 @@ export default function UpdateUserDetails() {
 
           <div>
             <button
-              className="mt-1 w-full border rounded-md p-2 bg-indigo-600 text-white disabled:text-gray-700
+              className="mt-1 w-full border rounded-md p-2 bg-purple-600 text-white disabled:text-gray-700
                         disabled:cursor-not-allowed
-                        disabled:opacity-60 hover:cursor-pointer hover:bg-indigo-700 shadow-2xl"
+                        disabled:opacity-60 hover:cursor-pointer hover:bg-purple-700 shadow-2xl"
 
               onClick={handleSave}
             >

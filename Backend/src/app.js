@@ -20,8 +20,7 @@ import errorMiddleware from './middleware/error.middleware.js';
 dotenv.config({path:"./.env"})
 const app = express();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
-
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
 
 app.use(cors({
    origin: (origin, callback) => {

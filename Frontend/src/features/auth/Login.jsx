@@ -306,7 +306,7 @@ export default function Login({handlePages}) {
     <>
 
     {page===1 &&  <div className='flex flex-col items-center justify-center h-[100%] w-[100%]'>
-        <div className='block text-purple-600 font-bold text-4xl'> Creators-Hub </div>
+        <div className='block text-purple-600 font-bold text-4xl'> AI Counsellor </div>
         <div className='h-[60%] w-[90%] p-3 flex flex-col rounded-2xl '>
             {/* <div className='font-bold text-lg text-black text-xl'>Email</div> */}
             <div className={`m-1 font-semibold  text-black text-2xs border-1 ${className.email.class} rounded-xl p-2`}><input className='outline-none hover:outline-none w-[100%]' type="text" placeholder={className.email.placeholder} onChange={onChangeEmail} value={email} ></input></div>

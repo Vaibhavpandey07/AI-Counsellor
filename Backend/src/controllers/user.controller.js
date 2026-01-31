@@ -355,10 +355,12 @@ const removeUser = async(req,res)=>{}
 
 const getUserDetails = async(req,res)=>{
     const user = await Users.findById({_id:req.userId}).select("-_id -password -refreshToken")
+    const userdetails = await UserOtherDetails.findOne({user_id:req.userId});
     if(!user){
         throw new ApiError(400,"User does not exist");
     }
     try{
+        let onboarding =  userdetails?.currentStage>=2?true:false || false;
         const data={
             "firstName":user.firstName,
             "lastName" : user.lastName,
@@ -366,7 +368,9 @@ const getUserDetails = async(req,res)=>{
             "fullName" :user.fullName,
             "profilePhoto":user.profilePhoto,
             "creator" : user.userType==2?true:false,
+            "onBoarding" :onboarding
         }
+        console.log(data);
         return res.status(200).send(new ApiResponse(200,"success",data))
     }
     catch(err){

@@ -125,8 +125,8 @@ export default function Signup({handlePages}) {
             setPage(3);
             alert("Verification OTP Sent on Email")
         }).catch(err=>{
-            if(err.response.data.message){
-                setMessage2(err.response.data.message);
+            if(err?.response?.data?.message){
+                setMessage2(err?.response?.data?.message);
             }else{
                 setMessage2(err.message);
             }

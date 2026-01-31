@@ -13,7 +13,7 @@ export default function LoginCard() {
 
   return (
         <div className='flex justify-center items-center h-full w-full '>
-            <div className='block flex  flex-col md:flex-row w-[80%] h-[90%] lg:w-[70%] xl:w-[50%] 2xl:w-[40%] md:h-[60%]  overflow-hidden rounded-2xl shadow-xl shadow-indigo-500/30 '>
+            <div className='block flex  flex-col md:flex-row w-[80%] h-[90%] lg:w-[70%] xl:w-[50%] 2xl:w-[40%] md:h-[60%]  overflow-hidden rounded-2xl shadow-xl shadow-purple-500 bg-white '>
                 <div className='overflow-hidden w-[100%] h-[50%] md:w-[45%] md:h-[100%]'><img className='overflow-hidden h-full w-full object-cover' src={loginImg} alt=""/></div>
                 <div className='overflow-hidden w-[100%] h-[50%] md:w-[55%] md:h-[100%] p-4'>
                     {loginPage && <Login handlePages={handlePages} />}

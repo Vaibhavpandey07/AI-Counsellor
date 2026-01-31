@@ -1,18 +1,11 @@
-let url  = 'https://api.worqnow.ai/education/nl/universities/aeres'
-let url2 = "https://api.worqnow.ai/education/nl/entry-requirements?university_code=hva"
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
 
-fetch(url)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log("API Response:", data.data.courses
+dotenv.config();
 
-    );
-  })
-  .catch(error => {
-    console.error("Fetch error:", error);
-  });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+
+
+const result = await model.generateContent("Say hello");
+console.log(result.response.text());

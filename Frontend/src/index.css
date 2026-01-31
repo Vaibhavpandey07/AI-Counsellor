@@ -24,3 +24,88 @@
     background-position: 0% 50%;
   }
 }
+
+/* ---------- STAR BACKGROUND (ENHANCED) ---------- */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  animation: moveStars linear infinite;
+}
+
+/* Small stars – more dense */
+.stars-sm {
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 80px 120px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 200px 200px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 300px 50px, rgba(255,255,255,0.7), transparent);
+  background-size: 220px 220px;
+  animation-duration: 140s;
+  opacity: 0.6;
+}
+
+/* Medium stars */
+.stars-md {
+  background-image:
+    radial-gradient(2.5px 2.5px at 50px 80px, white, transparent),
+    radial-gradient(2.5px 2.5px at 150px 250px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2.5px 2.5px at 280px 180px, rgba(255,255,255,0.85), transparent);
+  background-size: 380px 380px;
+  animation-duration: 220s;
+  opacity: 0.75;
+}
+
+/* Large glowing stars */
+.stars-lg {
+  background-image:
+    radial-gradient(3.5px 3.5px at 120px 100px, white, transparent),
+    radial-gradient(3.5px 3.5px at 320px 300px, rgba(255,255,255,0.95), transparent);
+  background-size: 600px 600px;
+  animation-duration: 320s;
+  opacity: 0.9;
+}
+
+/* Star movement */
+@keyframes moveStars {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-1200px);
+  }
+}
+
+.stars {
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-40px); }
+}
+
+.animate-floatSlow {
+  animation: floatSlow 25s ease-in-out infinite;
+}
+
+@keyframes auroraMove {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-80px, -60px); }
+  100% { transform: translate(0, 0); }
+}
+
+.animate-auroraMove {
+  animation: auroraMove 40s ease-in-out infinite;
+}
+
+@keyframes dust {
+  0% { transform: translateY(0); opacity: 0.2; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(-60px); opacity: 0.2; }
+}
+
+.animate-dust {
+  animation: dust 30s linear infinite;
+}

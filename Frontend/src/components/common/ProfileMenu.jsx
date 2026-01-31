@@ -11,7 +11,7 @@ export default function ProfileMenu() {
   const navigate = useNavigate();
 
   const userSettingChange= ()=>{
-    return navigate('/user/changeDetails', {replace:true});
+    return navigate('user/dashboard', {replace:true});
   }
   const uploadClick =()=>{
     if(!obj.isCreator){
@@ -22,15 +22,8 @@ export default function ProfileMenu() {
   }
 
   const userChannel =()=>{
-    if(!obj.isCreator){
-      return navigate('/user/channel/createChannel', {replace:true});
-    }
-    else{
-      api.get('/api/v1/channels/UserChannelDetails').then((res)=>{
-        obj.setChannelUserName(res.data.data);
-        navigate(`/channel/${res.data.data.channelUserName}`, {replace:true})
-      })
-    }
+    return navigate('/user/ai/chat', {replace:true});
+    
   }
 
   const onLogout =async()=>{
@@ -96,24 +89,19 @@ export default function ProfileMenu() {
           {/* ${danger ? "text-red-600 hover:bg-red-50" : ""} */}
 
           <ul className="py-2 text-sm">
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2 hover:bg-gray-100 `} onClick={uploadClick}>
-                <i className='fa-solid fa-arrow-up-from-bracket text-purple-600'></i> Upload Video
-              </button>
-            </li>
+ 
 
              <li>
               <button
                 className={`w-full text-left px-4 py-2 hover:bg-gray-100 `} onClick={userChannel}>
-                <i className='fa-solid fa-dice-d6 text-purple-600'></i> Your channel
+                <i className='fa-solid fa-dice-d6 text-purple-600'></i> AI counsellor
               </button>
             </li>
 
              <li>
               <button
                 className={`w-full text-left px-4 py-2 hover:bg-gray-100 `} onClick={userSettingChange}>
-                <i className='fa-solid fa-gear text-purple-600'></i> User settings
+                <i className='fa-solid fa-user text-purple-600'></i> DashBoard
               </button>
             </li>
 

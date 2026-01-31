@@ -7,4 +7,8 @@ export default defineConfig({
   css: {
     devSourcemap: false,
   },
+    server: {
+    port: 3000,
+    allowedHosts: ["localhost", "3000"],
+  },
 })
